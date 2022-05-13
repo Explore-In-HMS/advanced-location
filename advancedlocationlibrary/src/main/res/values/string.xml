@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="sharing_location">Reaching your location.</string>
+    <string name="channel_name_location_sharing" translatable="false">Current location.</string>
+    <string name="channel_description_location_sharing">Reaching your current location.</string>
+</resources>

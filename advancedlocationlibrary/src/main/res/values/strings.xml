@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="battery">Battery</string>
+    <string name="close">Close</string>
+    <string name="warning">Warning</string>
+    <string name="max_snapshot_limit_reached">Maximum number of snapshots are in use. Can\'t complete last command.</string>
+</resources>
