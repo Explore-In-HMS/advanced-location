@@ -135,7 +135,7 @@ class AdvancedLocation {
      *  or returns an exception on failure
      */
     @Throws(AdvancedLocationException::class)
-    private fun getLastLocation(activity: Activity, taskListener: TaskListener<Position>) {
+    fun getLastLocation(activity: Activity, taskListener: TaskListener<Position>) {
         val methodName = this::getLastLocation.name
         Log.d(TAG, "$methodName()")
         val fragmentActivity = getFragmentActivity(activity)
@@ -152,7 +152,7 @@ class AdvancedLocation {
      *  @param resultListener returns the position(latitude,longitude)
      */
     @Throws(AdvancedLocationException::class)
-    private fun getCurrentLocation(activity: Activity, resultListener: ResultListener<Position>) {
+    fun getCurrentLocation(activity: Activity, resultListener: ResultListener<Position>) {
         val methodName = this::getCurrentLocation.name
         Log.d(TAG, "$methodName()")
         val fragmentActivity = getFragmentActivity(activity)
@@ -171,7 +171,7 @@ class AdvancedLocation {
      *  @returns BackgroundLocationResult that includes 2 getter methods
      */
     @Throws(AdvancedLocationException::class)
-    private fun startBackgroundLocationUpdates(
+    fun startBackgroundLocationUpdates(
         activity: Activity,
         updateInterval : Long = INTERVAL_15_SECONDS
     ) : BackgroundLocationResult {
@@ -182,8 +182,7 @@ class AdvancedLocation {
         Intent(mContext, LocationService::class.java).also {
             it.putExtra(TASK_REQUEST, TaskData(interval = updateInterval))
             it.putExtra(FROM_ACTIVITY, fragmentActivity.javaClass.name)
-            mContext.startService(it)
-            mLocationBackgroundService = it
+            mContext.startForegroundService(it)
         }
 
         return mBackgroundLocationResult
@@ -193,21 +192,18 @@ class AdvancedLocation {
      *  Stops background location updates
      */
     @Throws(AdvancedLocationException::class)
-    private fun stopBackgroundLocationUpdates() {
+    fun stopBackgroundLocationUpdates() {
         val methodName = this::stopBackgroundLocationUpdates.name
         Log.d(TAG, "$methodName()")
 
-        if (mLocationBackgroundService != null) {
-            getContext().stopService(mLocationBackgroundService)
-            mLocationBackgroundService = null
-        }
+        getContext().stopService(mLocationBackgroundService)
     }
 
     /**
      *  Stops background location updates
      */
     @Throws(AdvancedLocationException::class)
-    private fun getActivityType() : ActivityTypeResult {
+    fun getActivityType() : ActivityTypeResult {
         val methodName = this::getActivityType.name
         Log.d(TAG, "$methodName()")
 
@@ -228,7 +224,8 @@ class AdvancedLocation {
         private val mBackgroundLocationResult by lazy { BackgroundLocationResult() }
         internal val mActivityTypeDatabase by lazy { ActivityTypeDatabase.getActivityTypeDatabase(mContext)?.activityTypeDao() }
         private val mActivityTypeResult by lazy { ActivityTypeResult() }
-        private var mLocationBackgroundService : Intent? = null
+        private val mLocationBackgroundService  by lazy { Intent(mContext,LocationService::class.java) }
+
         private val mainJob = SupervisorJob()
         internal val coroutineScopeIO = CoroutineScope(Dispatchers.IO + mainJob)
         internal val coroutineScopeMain = CoroutineScope(Dispatchers.Main + mainJob)

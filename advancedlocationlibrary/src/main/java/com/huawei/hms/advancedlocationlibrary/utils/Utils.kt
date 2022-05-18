@@ -8,6 +8,12 @@ import android.graphics.drawable.Icon
 import android.util.Log
 import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.FragmentActivity
+import com.huawei.hms.advancedlocationlibrary.data.UpdateInterval.Companion.INTERVAL_0_SECONDS
+import com.huawei.hms.advancedlocationlibrary.data.UpdateInterval.Companion.INTERVAL_15_SECONDS
+import com.huawei.hms.advancedlocationlibrary.data.UpdateInterval.Companion.INTERVAL_30_SECONDS
+import com.huawei.hms.advancedlocationlibrary.data.UpdateInterval.Companion.INTERVAL_FIVE_MINUTES
+import com.huawei.hms.advancedlocationlibrary.data.UpdateInterval.Companion.INTERVAL_ONE_MINUTE
+import com.huawei.hms.advancedlocationlibrary.data.UpdateInterval.Companion.INTERVAL_TWO_MINUTES
 import com.huawei.hms.advancedlocationlibrary.data.model.holders.TaskData
 import kotlin.random.Random
 
@@ -17,22 +23,22 @@ internal object Utils {
     const val SEPARATOR = "::"
 
     val HIGH_ACCURACY_TASK_DATA = TaskData(
-        interval = 0L,
+        interval = INTERVAL_15_SECONDS,
         smallestDisplacement = 0F
     )
 
     val EFFICIENT_POWER_TASK_DATA = TaskData(
-        interval = 3L,
+        interval = INTERVAL_ONE_MINUTE,
         smallestDisplacement = 1F
     )
 
     val LOW_POWER_TASK_DATA = TaskData(
-        interval = 10L,
+        interval = INTERVAL_TWO_MINUTES,
         smallestDisplacement = 2F
     )
 
     val PASSIVE_TASK_DATA = TaskData(
-        interval = 30L,
+        interval = INTERVAL_FIVE_MINUTES,
         smallestDisplacement = 5F
     )
 

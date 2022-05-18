@@ -26,7 +26,7 @@ import kotlinx.coroutines.launch
 internal class PermissionManager(private val context: Context) {
 
     companion object {
-        private const val TAG = "${LOG_PREFIX}PermissionMng"
+        private const val TAG = "${LOG_PREFIX}PermissionManager"
 
         private const val PERMISSION_SINGLE = "PermissionSingle"
         private const val PERMISSION_MULTIPLE = "PermissionMultiple"
@@ -122,14 +122,15 @@ internal class PermissionManager(private val context: Context) {
         } else {
             requestLocationPermission(activity) { result ->
                 if (isAboveQ()) {
-
                     var backgroundPermitted = false
                     var locationPermitted = false
 
                     for (permission in result) {
                         if (permission.key == Manifest.permission.ACCESS_FINE_LOCATION && permission.value) {
+                            Log.d(TAG, "DDDDDDDDDDDDDDDD")
                             locationPermitted = true
                         } else if (permission.key == Manifest.permission.ACCESS_BACKGROUND_LOCATION && permission.value) {
+                            Log.d(TAG, "EEEEEEEEEEEEEEE")
                             backgroundPermitted = true
                         }
                     }
@@ -153,7 +154,6 @@ internal class PermissionManager(private val context: Context) {
                         )
                     }
                 } else if (isAboveM()) {
-
                     for (permission in result) {
                         if (permission.key == Manifest.permission.ACCESS_FINE_LOCATION && permission.value) {
                             Log.d(
