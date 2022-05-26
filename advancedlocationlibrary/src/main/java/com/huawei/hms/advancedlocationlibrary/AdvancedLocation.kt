@@ -1,12 +1,12 @@
 package com.huawei.hms.advancedlocationlibrary
 
 import TaskListener
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.util.Log
 import com.huawei.hms.advancedlocationlibrary.data.UpdateInterval.Companion.INTERVAL_15_SECONDS
-import com.huawei.hms.advancedlocationlibrary.data.UpdateInterval.Companion.INTERVAL_30_SECONDS
 import com.huawei.hms.advancedlocationlibrary.managers.LocationManager
 import com.huawei.hms.advancedlocationlibrary.data.listeners.ResultListener
 import com.huawei.hms.advancedlocationlibrary.utils.Constants.LOG_PREFIX
@@ -207,15 +207,23 @@ class AdvancedLocation {
         val methodName = this::getActivityType.name
         Log.d(TAG, "$methodName()")
 
-        mActivityManager.createActivityIdentificationRequest(INTERVAL_30_SECONDS)
+        mActivityManager.createActivityIdentificationRequest(INTERVAL_15_SECONDS)
 
         return mActivityTypeResult
     }
 
+    @Throws(AdvancedLocationException::class)
+    fun clearDB() {
+        val methodName = this::clearDB.name
+        Log.d(TAG, "$methodName()")
+
+        mLocationDatabase?.clearDB()
+    }
 
     companion object {
         private const val TAG = "${LOG_PREFIX}AdvancedLocation"
 
+        @SuppressLint("StaticFieldLeak")
         internal lateinit var mContext: Context
         internal val mPermissionManager by lazy { PermissionManager(mContext) }
         internal val mLocationManager by lazy { LocationManager(mContext) }
@@ -228,8 +236,6 @@ class AdvancedLocation {
 
         private val mainJob = SupervisorJob()
         internal val coroutineScopeIO = CoroutineScope(Dispatchers.IO + mainJob)
-        internal val coroutineScopeMain = CoroutineScope(Dispatchers.Main + mainJob)
-        internal val coroutineScopeDefault = CoroutineScope(Dispatchers.Default + mainJob)
 
         fun init(context: Context) {
             Log.d(TAG, "${this::init.name}()")

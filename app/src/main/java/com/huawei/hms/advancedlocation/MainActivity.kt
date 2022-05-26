@@ -4,9 +4,9 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
-import android.widget.Toast
 import com.huawei.hms.advancedlocationlibrary.AdvancedLocation
 import com.huawei.hms.advancedlocationlibrary.data.UpdateInterval
+import com.huawei.hms.advancedlocationlibrary.data.model.enums.ActivityType
 import com.huawei.hms.advancedlocationlibrary.data.model.enums.LocationType
 
 class MainActivity : AppCompatActivity() {
@@ -16,15 +16,23 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        /*advancedLocation.requestLocationUpdates(this,LocationType.EFFICIENT_POWER) {
+        val buttonStartService = findViewById<Button>(R.id.buttonStartService)
+        val buttonGetCurrentLocation = findViewById<Button>(R.id.buttonGetCurrentLocation)
+        val buttonGetLastLocation = findViewById<Button>(R.id.buttonGetLastLocation)
+        val buttonClearDB = findViewById<Button>(R.id.buttonClearDB)
+        val buttonStopUpdate = findViewById<Button>(R.id.buttonStopUpdate)
+
+        advancedLocation.requestLocationUpdates(this,LocationType.EFFICIENT_POWER) {
             Log.d("LocationTalha", "Lat: ${it.latitude}\n Long: ${it.longitude}")
             //Toast.makeText(this,"Lat: ${it.latitude}\n Long: ${it.longitude}",Toast.LENGTH_LONG).show()
-        }*/
-        //advancedLocation.stopBackgroundLocationUpdates()
+        }
 
-        val buttonStartService = findViewById<Button>(R.id.buttonStartService)
+        advancedLocation.getActivityType().let {
 
-        /*buttonStartService.setOnClickListener {
+            Log.i("ACTIVITY TYPE : ", it.toString())
+        }
+
+        buttonStartService.setOnClickListener {
             advancedLocation.startBackgroundLocationUpdates(
                 this,
                 UpdateInterval.INTERVAL_0_SECONDS
@@ -36,7 +44,27 @@ class MainActivity : AppCompatActivity() {
                 }
 
             }
-        }*/
+        }
+
+        buttonGetCurrentLocation.setOnClickListener {
+            advancedLocation.getCurrentLocation(this, resultListener = {
+                Log.i("CURRENT LOCATION",it.toString())
+            })
+        }
+
+        buttonGetLastLocation.setOnClickListener {
+            advancedLocation.getLastLocation(this, taskListener = {
+                Log.i("LAST LOCATION",it.toString())
+            })
+        }
+
+        buttonClearDB.setOnClickListener {
+            advancedLocation.clearDB()
+        }
+
+        buttonStopUpdate.setOnClickListener {
+            advancedLocation.stopBackgroundLocationUpdates()
+        }
     }
 
     override fun onDestroy() {

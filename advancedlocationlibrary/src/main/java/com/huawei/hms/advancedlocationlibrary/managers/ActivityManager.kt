@@ -1,12 +1,12 @@
 package com.huawei.hms.advancedlocationlibrary.managers
 
+import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.util.Log
 import com.huawei.hms.advancedlocationlibrary.AdvancedLocation.Companion.mActivityTypeDatabase
 import com.huawei.hms.advancedlocationlibrary.data.UpdateInterval
-import com.huawei.hms.advancedlocationlibrary.data.model.enums.ActivityType
 import com.huawei.hms.advancedlocationlibrary.database.dto.ActivityTypeDto
 import com.huawei.hms.advancedlocationlibrary.receivers.ActivityBroadcastReceiver
 import com.huawei.hms.advancedlocationlibrary.utils.AdvancedLocationException
@@ -27,6 +27,7 @@ internal class ActivityManager(private val context: Context) {
 
     private val mActivityIdentificationService = ActivityIdentification.getService(context)
 
+    @SuppressLint("UnspecifiedImmutableFlag")
     @JvmName("getPendingIntent2")
     private fun getPendingIntent(
         action: String = ActivityBroadcastReceiver.ACTION_PROCESS_ACTIVITY

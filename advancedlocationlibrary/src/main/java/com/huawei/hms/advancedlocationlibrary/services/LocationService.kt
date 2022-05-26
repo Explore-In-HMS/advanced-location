@@ -108,4 +108,11 @@ internal class LocationService : Service() {
             Log.w(TAG, "onStartCommand --> Intent is null.")
         }
     }
+
+    /**
+     *  Clear DB values written before
+     */
+    private fun clearDB(){
+        mLocationDatabase?.clearDB()
+    }
 }
