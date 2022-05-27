@@ -4,6 +4,7 @@ plugins {
     id 'kotlin-kapt'
     id 'kotlin-android-extensions'
     id 'com.huawei.agconnect'
+    id 'maven-publish'
 }
 
 android {
@@ -64,4 +65,18 @@ dependencies {
     implementation 'androidx.test.ext:junit-ktx:1.1.3'
     testImplementation 'junit:junit:4.12'
     kapt "androidx.room:room-compiler:2.2.5"
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+
+                groupId = 'com.github.talhaoz'
+                artifactId = 'advanced-location'
+                version = '1.0.0'
+            }
+        }
+    }
 }
