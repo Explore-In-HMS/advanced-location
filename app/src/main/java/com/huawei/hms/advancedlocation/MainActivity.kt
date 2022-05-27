@@ -1,17 +1,19 @@
 package com.huawei.hms.advancedlocation
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
+import androidx.appcompat.app.AppCompatActivity
+import com.hms.advancedlocation.R
 import com.huawei.hms.advancedlocationlibrary.AdvancedLocation
 import com.huawei.hms.advancedlocationlibrary.data.UpdateInterval
-import com.huawei.hms.advancedlocationlibrary.data.model.enums.ActivityType
 import com.huawei.hms.advancedlocationlibrary.data.model.enums.LocationType
 
 class MainActivity : AppCompatActivity() {
 
     private val advancedLocation = AdvancedLocation()
+    private val TAG = "MainActivity"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -23,13 +25,12 @@ class MainActivity : AppCompatActivity() {
         val buttonStopUpdate = findViewById<Button>(R.id.buttonStopUpdate)
 
         advancedLocation.requestLocationUpdates(this,LocationType.EFFICIENT_POWER) {
-            Log.d("LocationTalha", "Lat: ${it.latitude}\n Long: ${it.longitude}")
-            //Toast.makeText(this,"Lat: ${it.latitude}\n Long: ${it.longitude}",Toast.LENGTH_LONG).show()
+            Log.d(TAG, "Lat: ${it.latitude}\n Long: ${it.longitude}")
         }
 
         advancedLocation.getActivityType().let {
 
-            Log.i("ACTIVITY TYPE : ", it.toString())
+            Log.i(TAG, it.toString())
         }
 
         buttonStartService.setOnClickListener {
@@ -40,7 +41,7 @@ class MainActivity : AppCompatActivity() {
 
                 val list = it.getAllLocationUpdates()
                 list?.forEach { location ->
-                    Log.d("LocationTalha", "### Lat: ${location.latitude}\n Long: ${location.longitude}")
+                    Log.d(TAG, "### Lat: ${location.latitude}\n Long: ${location.longitude}")
                 }
 
             }
@@ -48,13 +49,13 @@ class MainActivity : AppCompatActivity() {
 
         buttonGetCurrentLocation.setOnClickListener {
             advancedLocation.getCurrentLocation(this, resultListener = {
-                Log.i("CURRENT LOCATION",it.toString())
+                Log.i(TAG,it.toString())
             })
         }
 
         buttonGetLastLocation.setOnClickListener {
             advancedLocation.getLastLocation(this, taskListener = {
-                Log.i("LAST LOCATION",it.toString())
+                Log.i(TAG,it.toString())
             })
         }
 
@@ -72,7 +73,6 @@ class MainActivity : AppCompatActivity() {
             this,
             UpdateInterval.INTERVAL_0_SECONDS
         )
-
         super.onDestroy()
     }
 }
