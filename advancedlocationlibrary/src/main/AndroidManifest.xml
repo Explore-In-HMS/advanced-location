@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.huawei.hms.advancedlocationlibrary">
+    package="com.hms.advancedlocationlibrary">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -15,16 +15,16 @@
     <application>
 
         <provider
-            android:name=".providers.AdvancedLocationInitProvider"
+            android:name="com.hms.advancedlocationlibrary.providers.AdvancedLocationInitProvider"
             android:authorities="${applicationId}.AdvancedLocationInitProvider"
             android:exported="false" />
 
         <service
-            android:name=".services.LocationService"
+            android:name="com.hms.advancedlocationlibrary.services.LocationService"
             android:exported="false" />
 
         <receiver
-            android:name=".receivers.ActivityBroadcastReceiver"
+            android:name="com.hms.advancedlocationlibrary.receivers.ActivityBroadcastReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="${applicationId}.ACTION_PROCESS_LOCATION" />
