@@ -4,7 +4,7 @@
 [![Release](https://jitpack.io/v/talhaoz/AdvancedLocation.svg)](https://jitpack.io/#talhaoz/AdvancedLocation)
 [![Downloads](https://jitpack.io/v/talhaoz/AdvancedLocation/month.svg)](#download)
 
-A powerful library for easy implementation of HMS Location Kit.
+A powerful library for easy implementation of HMS Location Kit.💙
 
 ## Features
 - Auto Location Permission Request
