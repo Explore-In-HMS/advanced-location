@@ -31,7 +31,7 @@ allprojects {
 ```gradle
 dependencies {
     ...
-    implementation 'com.github.talhaoz:AdvancedLocation:1.0.0'
+    implementation 'com.github.talhaoz:advanced-location:1.1.0
 }
 ```
 
