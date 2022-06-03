@@ -105,7 +105,7 @@ advancedLocation.getLastLocation(this) {
 - #### Background Location Updates
 ```kotlin
 /**
-*  Requests Location Updates by running a foreground service and store them in the Room DB (including old locations)
+*  Requests Location Updates by running a foreground service and stores them in the Room DB (including old locations)
 *
 *  @param activity is required for permission
 *  @param updateInterval location update refresh frequency (Default value = 5 mins)
@@ -131,7 +131,7 @@ advancedLocation.clearLocationDB()
 ```
 - #### Activity Recognition
 ```kotlin
-// Requests the current activity type and stores the result to Room DB
+// Requests the current activity type and stores the result in the Room DB
 advancedLocation.getActivityType().let { activityTypeResult ->
     val activityType = activityTypeResult.getActivityType()
     activityType.let {
