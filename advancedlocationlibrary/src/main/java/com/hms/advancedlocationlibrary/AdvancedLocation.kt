@@ -1,35 +1,32 @@
 package com.hms.advancedlocationlibrary
 
-import com.hms.advancedlocationlibrary.data.listeners.TaskListener
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import com.hms.advancedlocationlibrary.data.UpdateInterval
 import com.hms.advancedlocationlibrary.data.UpdateInterval.Companion.INTERVAL_15_SECONDS
 import com.hms.advancedlocationlibrary.data.UpdateInterval.Companion.INTERVAL_30_SECONDS
-import com.hms.advancedlocationlibrary.managers.LocationManager
+import com.hms.advancedlocationlibrary.data.UpdateInterval.Companion.INTERVAL_FIVE_MINUTES
 import com.hms.advancedlocationlibrary.data.listeners.ResultListener
-import com.hms.advancedlocationlibrary.utils.Constants.LOG_PREFIX
-import com.hms.advancedlocationlibrary.utils.AdvancedLocationException
-import com.hms.advancedlocationlibrary.utils.Utils.getFragmentActivity
+import com.hms.advancedlocationlibrary.data.listeners.TaskListener
 import com.hms.advancedlocationlibrary.data.model.enums.LocationType
-import com.hms.advancedlocationlibrary.data.model.holders.Position
-import com.hms.advancedlocationlibrary.data.model.holders.TaskData
 import com.hms.advancedlocationlibrary.data.model.holders.*
 import com.hms.advancedlocationlibrary.database.ActivityTypeDatabase
 import com.hms.advancedlocationlibrary.database.ActivityTypeResult
 import com.hms.advancedlocationlibrary.database.BackgroundLocationResult
 import com.hms.advancedlocationlibrary.database.LocationDatabase
 import com.hms.advancedlocationlibrary.managers.ActivityManager
+import com.hms.advancedlocationlibrary.managers.LocationManager
 import com.hms.advancedlocationlibrary.managers.PermissionManager
 import com.hms.advancedlocationlibrary.services.LocationService
+import com.hms.advancedlocationlibrary.utils.AdvancedLocationException
 import com.hms.advancedlocationlibrary.utils.Constants.FROM_ACTIVITY
-import com.hms.advancedlocationlibrary.utils.Constants.TASK_REQUEST
-import com.hms.advancedlocationlibrary.utils.Utils.EFFICIENT_POWER_TASK_DATA
-import com.hms.advancedlocationlibrary.utils.Utils.HIGH_ACCURACY_TASK_DATA
-import com.hms.advancedlocationlibrary.utils.Utils.LOW_POWER_TASK_DATA
-import com.hms.advancedlocationlibrary.utils.Utils.PASSIVE_TASK_DATA
+import com.hms.advancedlocationlibrary.utils.Constants.INTERVAL
+import com.hms.advancedlocationlibrary.utils.Constants.LOG_PREFIX
+import com.hms.advancedlocationlibrary.utils.Utils.getFragmentActivity
+import com.huawei.hms.location.LocationRequest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -39,23 +36,57 @@ class AdvancedLocation {
     /**
      *  Requests Location Updates.
      *
-     *  @param activity is required for pendingIntent of notification.
+     *  @param activity is required to check for location permission
      *  @param locationType can be HIGH_ACCURACY, EFFICIENT_POWER, LOW_POWER or PASSIVE
-     *  @param resultListener returns the position(latitude,longitude)
+     *  @param interval interval(refresh frequency) --> default value = 0L
+     *  @param resultListener returns an object of position(latitude,longitude)
      */
     @Throws(AdvancedLocationException::class)
-    fun requestLocationUpdates(activity: Activity, locationType: LocationType, resultListener: ResultListener<Position>) {
-        val methodName = this::requestLocationUpdates.name
+    fun requestLocationUpdates(
+        activity: Activity,
+        locationType: LocationType,
+        interval : Long = INTERVAL_15_SECONDS,
+        resultListener: ResultListener<Position>
+    ) {
+        val methodName = "requestLocationUpdates"
         Log.d(TAG, "$methodName()")
         val fragmentActivity = getFragmentActivity(activity)
 
         mPermissionManager.doWithLocationPermission(fragmentActivity,{
             when(locationType){
-                LocationType.HIGH_ACCURACY -> requestHighAccuracyLocation(resultListener)
-                LocationType.EFFICIENT_POWER -> requestEfficientPowerLocation(resultListener)
-                LocationType.LOW_POWER -> requestLowPowerLocation(resultListener)
-                LocationType.PASSIVE -> requestPassiveLocation(resultListener)
+                LocationType.HIGH_ACCURACY -> requestHighAccuracyLocation(interval,resultListener)
+                LocationType.EFFICIENT_POWER -> requestEfficientPowerLocation(interval,resultListener)
+                LocationType.LOW_POWER -> requestLowPowerLocation(interval,resultListener)
+                LocationType.PASSIVE -> requestPassiveLocation(interval,resultListener)
             }
+        })
+    }
+
+    /**
+     *  Requests Location Updates with custom values.
+     *
+     *  @param activity is required to check for location permission
+     *  @param interval interval(refresh frequency) --> default value = 0L
+     *  @param smallestDisplacement(max difference between positions) --> default value = 0F
+     *  @param resultListener returns an object of position(latitude,longitude)
+     */
+    @Throws(AdvancedLocationException::class)
+    fun requestCustomLocationUpdates(
+        activity: Activity,
+        interval : Long = INTERVAL_15_SECONDS,
+        smallestDisplacement : Float = 0F,
+        resultListener: ResultListener<Position>
+    ) {
+        val methodName = "requestLocationUpdates"
+        Log.d(TAG, "$methodName()")
+        val fragmentActivity = getFragmentActivity(activity)
+
+        mPermissionManager.doWithLocationPermission(fragmentActivity,{
+            mLocationManager.startCustomLocationUpdates(
+                interval,
+                smallestDisplacement,
+                resultListener
+            )
         })
     }
 
@@ -65,7 +96,7 @@ class AdvancedLocation {
      */
     @Throws(AdvancedLocationException::class)
     fun removeLocationUpdateRequest() {
-        val methodName = this::requestLocationUpdates.name
+        val methodName = this::removeLocationUpdateRequest.name
         Log.d(TAG, "$methodName()")
 
         mLocationManager.stopLocationUpdates()
@@ -73,60 +104,72 @@ class AdvancedLocation {
 
 
     /**
-     *  Requests High Accuracy Location Updates.
+     *  Used to request the most accurate location.
      *
      *  @param resultListener returns the position(latitude,longitude)
      */
     @Throws(AdvancedLocationException::class)
-    private fun requestHighAccuracyLocation(resultListener: ResultListener<Position>) {
+    private fun requestHighAccuracyLocation(
+        interval: Long,
+        resultListener: ResultListener<Position>
+    ) {
         val methodName = this::requestHighAccuracyLocation.name
         Log.d(TAG, "$methodName()")
 
-        mLocationManager.startLocationUpdates(HIGH_ACCURACY_TASK_DATA, resultListener)
+        mLocationManager.startLocationUpdates(LocationRequest.PRIORITY_HIGH_ACCURACY, interval, resultListener)
     }
 
     /**
-     *  Requests Efficient Power Location Updates.
+     *  Requests Efficient Power(Block-level) Location Updates.
      *
      *  @param resultListener returns the position(latitude,longitude)
      */
     @Throws(AdvancedLocationException::class)
-    private fun requestEfficientPowerLocation(resultListener: ResultListener<Position>) {
+    private fun requestEfficientPowerLocation(
+        interval: Long,
+        resultListener: ResultListener<Position>
+    ) {
         val methodName = this::requestEfficientPowerLocation.name
         Log.d(TAG, "$methodName()")
 
         mPermissionManager.doIfLocationPermitted {
-            mLocationManager.startLocationUpdates(EFFICIENT_POWER_TASK_DATA, resultListener)
+            mLocationManager.startLocationUpdates(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY, interval, resultListener)
         }
     }
 
     /**
-     *  Requests Low Power Location Updates.
+     *  Requests Low Power(City-Level) Location Updates.
      *
      *  @param resultListener returns the position(latitude,longitude)
      */
     @Throws(AdvancedLocationException::class)
-    private fun requestLowPowerLocation(resultListener: ResultListener<Position>) {
+    private fun requestLowPowerLocation(
+        interval: Long,
+        resultListener: ResultListener<Position>
+    ) {
         val methodName = this::requestLowPowerLocation.name
         Log.d(TAG, "$methodName()")
 
         mPermissionManager.doIfLocationPermitted {
-            mLocationManager.startLocationUpdates(LOW_POWER_TASK_DATA, resultListener)
+            mLocationManager.startLocationUpdates(LocationRequest.PRIORITY_LOW_POWER, interval, resultListener)
         }
     }
 
     /**
-     *  Requests Passive Location Updates.
+     *  Requests the location with the optimal accuracy without additional power consumption.
      *
      *  @param resultListener returns the position(latitude,longitude)
      */
     @Throws(AdvancedLocationException::class)
-    private fun requestPassiveLocation(resultListener: ResultListener<Position>) {
+    private fun requestPassiveLocation(
+        interval: Long,
+        resultListener: ResultListener<Position>
+    ) {
         val methodName = this::requestPassiveLocation.name
         Log.d(TAG, "$methodName()")
 
         mPermissionManager.doIfLocationPermitted {
-            mLocationManager.startLocationUpdates(PASSIVE_TASK_DATA, resultListener)
+            mLocationManager.startLocationUpdates(LocationRequest.PRIORITY_NO_POWER, interval, resultListener)
         }
     }
 
@@ -138,7 +181,10 @@ class AdvancedLocation {
      *  or returns an exception on failure
      */
     @Throws(AdvancedLocationException::class)
-    fun getLastLocation(activity: Activity, taskListener: TaskListener<Position>) {
+    fun getLastLocation(
+        activity: Activity,
+        taskListener: TaskListener<Position>
+    ) {
         val methodName = this::getLastLocation.name
         Log.d(TAG, "$methodName()")
         val fragmentActivity = getFragmentActivity(activity)
@@ -155,7 +201,10 @@ class AdvancedLocation {
      *  @param resultListener returns the position(latitude,longitude)
      */
     @Throws(AdvancedLocationException::class)
-    fun getCurrentLocation(activity: Activity, resultListener: ResultListener<Position>) {
+    fun getCurrentLocation(
+        activity: Activity,
+        resultListener: ResultListener<Position>
+    ) {
         val methodName = this::getCurrentLocation.name
         Log.d(TAG, "$methodName()")
         val fragmentActivity = getFragmentActivity(activity)
@@ -169,21 +218,20 @@ class AdvancedLocation {
      *  Starts background location updates
      *
      *  @param activity is required for permission
-     *  @param updateInterval location update refresh frequency (Default value = 15 secs)
-     *  @param resultListener returns the position(latitude,longitude)
-     *  @returns BackgroundLocationResult that includes 2 getter methods
+     *  @param updateInterval location update refresh frequency (Default value = 5 Mins)
+     *  @returns BackgroundLocationResult that accesses to RoomDB (only get)
      */
     @Throws(AdvancedLocationException::class)
     fun startBackgroundLocationUpdates(
         activity: Activity,
-        updateInterval : Long = INTERVAL_15_SECONDS
+        updateInterval : Long = INTERVAL_FIVE_MINUTES
     ) : BackgroundLocationResult {
         val methodName = this::startBackgroundLocationUpdates.name
         Log.d(TAG, "$methodName()")
         val fragmentActivity = getFragmentActivity(activity)
 
         Intent(mContext, LocationService::class.java).also {
-            it.putExtra(TASK_REQUEST, TaskData(interval = updateInterval))
+            it.putExtra(INTERVAL, updateInterval)
             it.putExtra(FROM_ACTIVITY, fragmentActivity.javaClass.name)
             mContext.startForegroundService(it)
         }
@@ -203,7 +251,7 @@ class AdvancedLocation {
     }
 
     /**
-     *  Stops background location updates
+     *  Requests the current activity type and stores the result to Room DB
      */
     @Throws(AdvancedLocationException::class)
     fun getActivityType() : ActivityTypeResult {
@@ -215,12 +263,26 @@ class AdvancedLocation {
         return mActivityTypeResult
     }
 
+    /**
+     *  Clears stored locations in the DB
+     */
     @Throws(AdvancedLocationException::class)
-    fun clearDB() {
-        val methodName = this::clearDB.name
+    fun clearLocationDB() {
+        val methodName = this::clearLocationDB.name
         Log.d(TAG, "$methodName()")
 
         mLocationDatabase?.clearDB()
+    }
+
+    /**
+     *  Clears stored activity types in the DB
+     */
+    @Throws(AdvancedLocationException::class)
+    fun clearActivityTypeDB() {
+        val methodName = this::clearActivityTypeDB.name
+        Log.d(TAG, "$methodName()")
+
+        mActivityTypeDatabase?.clearDB()
     }
 
     companion object {

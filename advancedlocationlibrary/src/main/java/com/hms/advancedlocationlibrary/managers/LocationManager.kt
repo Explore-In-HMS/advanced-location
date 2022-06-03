@@ -1,6 +1,5 @@
 package com.hms.advancedlocationlibrary.managers
 
-import com.hms.advancedlocationlibrary.data.listeners.TaskListener
 import android.content.Context
 import android.content.IntentSender
 import android.location.Location
@@ -8,16 +7,17 @@ import android.os.Looper
 import android.util.Log
 import androidx.fragment.app.FragmentActivity
 import com.hms.advancedlocationlibrary.AdvancedLocation.Companion.coroutineScopeIO
+import com.hms.advancedlocationlibrary.data.UpdateInterval.Companion.INTERVAL_0_SECONDS
 import com.hms.advancedlocationlibrary.data.listeners.ResultListener
+import com.hms.advancedlocationlibrary.data.listeners.TaskListener
 import com.hms.advancedlocationlibrary.data.model.holders.Position
 import com.hms.advancedlocationlibrary.data.model.holders.Result
-import com.hms.advancedlocationlibrary.data.model.holders.TaskData
+import com.hms.advancedlocationlibrary.utils.AdvancedLocationException
+import com.hms.advancedlocationlibrary.utils.AdvancedLocationException.Companion.FAILED_TO_START_TASK
 import com.hms.advancedlocationlibrary.utils.Constants.DELAY_TIME
 import com.hms.advancedlocationlibrary.utils.Constants.LOG_PREFIX
 import com.hms.advancedlocationlibrary.utils.Constants.MAX_LOCATION_WAITING_TIME
 import com.hms.advancedlocationlibrary.utils.Constants.TRIAL_COUNT
-import com.hms.advancedlocationlibrary.utils.AdvancedLocationException
-import com.hms.advancedlocationlibrary.utils.AdvancedLocationException.Companion.FAILED_TO_START_TASK
 import com.huawei.hms.common.ApiException
 import com.huawei.hms.common.ResolvableApiException
 import com.huawei.hms.location.*
@@ -50,12 +50,12 @@ internal class LocationManager(private val context: Context) {
         init()
     }
 
-    private fun init(activity: FragmentActivity? = null, block: (()->Unit)? = null) {
+    private fun init(activity: FragmentActivity? = null) {
         runCatching {
             mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
         }.onSuccess {
             Log.d(TAG, "init --> FusedLocationProviderClient initialized.")
-            checkLocationSettings(activity, block)
+            checkLocationSettings(activity)
         }.onFailure {
             Log.w(TAG, "init --> FusedLocationProviderClient initialization failed. Error: ", it)
         }
@@ -63,7 +63,7 @@ internal class LocationManager(private val context: Context) {
 
     private var isWaitingForActivityResult = false
 
-    private fun checkLocationSettings(activity: FragmentActivity? = null, block: (()->Unit)? = null) {
+    private fun checkLocationSettings(activity: FragmentActivity? = null) {
         val settingsClient = LocationServices.getSettingsClient(context)
         val locationSettingsRequest = LocationSettingsRequest.Builder().run {
             addAllLocationRequests(mLocationRequests)
@@ -99,7 +99,7 @@ internal class LocationManager(private val context: Context) {
             delay(DELAY_TIME)
             availabilityTrial++
             if (availabilityTrial > TRIAL_COUNT) {
-                init(activity, block)
+                init(activity)
                 availabilityTrial = 0
                 delay(DELAY_TIME*4)
                 Log.d(TAG, "checkAvailability --> Not available. Initializing LocationManager again...")
@@ -116,17 +116,54 @@ internal class LocationManager(private val context: Context) {
     /**
      *  Requests location updates.
      *
-     *  @param period to specify the duration of location update request in milliseconds.
-     *  @return obtained results as Position with ResultListener.
+     *  @param priority sets the LocationType
+     *  @param interval refresh frequency of the updates
+     *  @param listener obtained results as Position with ResultListener.
      */
-    fun startLocationUpdates(taskData: TaskData, listener: ResultListener<Position>) {
-        Log.d(TAG, "startLocationUpdates()")
+    fun startLocationUpdates(
+        priority : Int,
+        interval : Long = INTERVAL_0_SECONDS,
+        listener: ResultListener<Position>
+    ) {
+        Log.d(TAG, "startCustomLocationUpdates()")
+
+        val locationRequest = LocationRequest().also {
+            it.interval = interval
+            it.priority = priority
+        }
+
+        requestLocationUpdates(locationRequest, listener)
+    }
+
+    /**
+     *  Requests location updates with custom values.
+     *
+     *  @param interval refresh frequency of the updates
+     *  @param smallestDisplacement max difference between two positions
+     *  @param listener obtained results as Position with ResultListener.
+     */
+    fun startCustomLocationUpdates(
+        interval : Long = INTERVAL_0_SECONDS,
+        smallestDisplacement : Float = 0F,
+        listener: ResultListener<Position>
+    ) {
+        Log.d(TAG, "startCustomLocationUpdates()")
+
+        val locationRequest = LocationRequest().also {
+            it.interval = interval
+            it.smallestDisplacement = smallestDisplacement
+        }
+
+        requestLocationUpdates(locationRequest, listener)
+    }
+
+    private fun requestLocationUpdates(
+        locationRequest : LocationRequest,
+        listener: ResultListener<Position>
+    ) {
         mLocationCallback = AdvancedLocationCallback(listener)
         mFusedLocationProviderClient?.requestLocationUpdates(
-            LocationRequest().also {
-                it.interval = taskData.interval
-                it.smallestDisplacement = taskData.smallestDisplacement
-            },
+            locationRequest,
             mLocationCallback,
             Looper.getMainLooper()
         )

@@ -10,6 +10,6 @@ sealed class Result<T> {
         return this is Success
     }
 
-    internal val value: T get() = (this as Success).data
+    val value: T get() = (this as Success).data
     internal val reason: Exception? get() = (this as Failure).exception
 }

@@ -9,11 +9,11 @@ import android.util.Log
 import com.hms.advancedlocationlibrary.AdvancedLocation.Companion.mLocationDatabase
 import com.hms.advancedlocationlibrary.AdvancedLocation.Companion.mLocationManager
 import com.hms.advancedlocationlibrary.AdvancedLocation.Companion.mPermissionManager
+import com.hms.advancedlocationlibrary.data.UpdateInterval.Companion.INTERVAL_15_SECONDS
 import com.hms.advancedlocationlibrary.database.dto.LocationDto
-import com.hms.advancedlocationlibrary.data.model.holders.TaskData
 import com.hms.advancedlocationlibrary.utils.Constants.FROM_ACTIVITY
+import com.hms.advancedlocationlibrary.utils.Constants.INTERVAL
 import com.hms.advancedlocationlibrary.utils.Constants.LOG_PREFIX
-import com.hms.advancedlocationlibrary.utils.Constants.TASK_REQUEST
 import com.hms.advancedlocationlibrary.utils.NotificationUtils
 import com.hms.advancedlocationlibrary.utils.Utils
 
@@ -52,10 +52,10 @@ internal class LocationService : Service() {
      *  If location permissions are granted by user, starts location updates and saves retrieved
      *  location data to Cloud DB.
      */
-    private fun startLocationSharing(taskData: TaskData) {
+    private fun startLocationSharing(interval: Long) {
         try {
             mPermissionManager.doIfLocationPermitted {
-                mLocationManager.startLocationUpdates(taskData) { result ->
+                mLocationManager.startCustomLocationUpdates(interval) { result ->
                     Log.d(TAG, "LocationResultListener --> onResult: $result")
 
                     mLocationDatabase?.insertLocation(
@@ -97,13 +97,9 @@ internal class LocationService : Service() {
                 start(null)
             }
 
-            val taskRequest = intent.getParcelableExtra<TaskData>(TASK_REQUEST)
+            val intervalTime = intent.getLongExtra(INTERVAL,INTERVAL_15_SECONDS)
+            startLocationSharing(intervalTime)
 
-            if (taskRequest != null) {
-                startLocationSharing(taskRequest)
-            } else {
-                Log.w(TAG, "onStartCommand --> Task request is null.")
-            }
         } else {
             Log.w(TAG, "onStartCommand --> Intent is null.")
         }

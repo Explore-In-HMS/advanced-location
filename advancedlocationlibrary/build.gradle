@@ -5,6 +5,7 @@ plugins {
     id 'kotlin-android-extensions'
     id 'com.huawei.agconnect'
     id 'maven-publish'
+    id "org.sonarqube" version "3.3"
 }
 
 android {

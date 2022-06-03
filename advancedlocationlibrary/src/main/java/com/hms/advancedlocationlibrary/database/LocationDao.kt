@@ -13,7 +13,7 @@ interface LocationDao{
     @Query("SELECT * FROM tbl_location")
     fun getAllLocationUpdates() : List<LocationDto>
 
-    @Query("SELECT * FROM tbl_location ORDER BY location_id DESC LIMIT 1")
+    @Query("SELECT * FROM tbl_location ORDER BY locationId DESC LIMIT 1")
     fun getLastLocation() : LocationDto
 
     @Query("DELETE FROM tbl_location")
