@@ -34,7 +34,10 @@ dependencies {
     implementation 'com.github.talhaoz:advanced-location:1.1.0
 }
 ```
-
+#### agconnect-services.json
+```app
+Add agconnect-services.json file under app directory
+```
 
 ## Use
 
@@ -108,11 +111,15 @@ advancedLocation.getLastLocation(this) {
 *  Requests Location Updates by running a foreground service and stores them in the Room DB (including old locations)
 *
 *  @param activity is required for permission
+*  @param notificationTitle is title for Notification that displayed along with foreground service (if Empty app name will be displayed)
+*  @param notificationDescription is description for Notification that displayed along with foreground service(if Empty default desc will be displayed)
 *  @param updateInterval location update refresh frequency (Default value = 5 mins)
 *  @returns BackgroundLocationResult that accesses to RoomDB (only get)
 */
 advancedLocation.startBackgroundLocationUpdates(
     this,
+    "Advanced Location Demo",
+    "Reaching your location in background..",
     UpdateInterval.INTERVAL_FIVE_MINUTES
 ).let {
     val list = it.getAllLocationUpdates()
@@ -132,7 +139,9 @@ advancedLocation.clearLocationDB()
 - #### Activity Recognition
 ```kotlin
 // Requests the current activity type and stores the result in the Room DB
-advancedLocation.getActivityType().let { activityTypeResult ->
+advancedLocation.getActivityType(
+    this
+).let { activityTypeResult ->
     val activityType = activityTypeResult.getActivityType()
     activityType.let {
         Log.d(TAG, "Activity Type: ${it?.type}")
