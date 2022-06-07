@@ -2,6 +2,8 @@ package com.hms.advancedlocationlibrary.utils
 
 internal object Constants {
     const val FROM_ACTIVITY = "FromActivity"
+    const val NOTIFICATION_TITLE = "notificationTitle"
+    const val NOTIFICATION_DESCRIPTION = "notificationDesc"
     const val LOG_PREFIX = "LIVE_"
     const val INTERVAL = "Interval"
     const val DELAY_TIME = 200L

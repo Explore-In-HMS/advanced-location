@@ -26,16 +26,24 @@ internal object NotificationUtils {
      *  @param activityClass is used to create the Intent to be triggered when user clicks the
      *  notification.
      */
-    fun getForegroundServiceNotification(context: Context, activityClass: Class<out Activity?>?): Notification {
+    fun getForegroundServiceNotification(context: Context, titleP: String? = null, descriptionP: String? = null, activityClass: Class<out Activity?>?): Notification {
         Log.d(TAG, "getForegroundServiceNotification()")
 
         val notificationIntent = Intent(context, activityClass)
-        val pendingIntent = PendingIntent.getActivity(context,
+        val pendingIntent = PendingIntent.getActivity(
+            context,
             LocationService.INTENT_REQUEST_CODE, notificationIntent,
             PendingIntent.FLAG_UPDATE_CURRENT
         )
-        val title = Utils.getBoundAppsName(AdvancedLocation.getContext())
-        val description = context.getString(R.string.sharing_location)
+
+        var title = Utils.getBoundAppsName(AdvancedLocation.getContext())
+        var description = context.getString(R.string.sharing_location)
+
+        if (titleP.isNullOrBlank().not())
+            title = titleP!!
+        if (descriptionP.isNullOrBlank().not())
+            description = descriptionP!!
+
 
         return getNotification(
             context,

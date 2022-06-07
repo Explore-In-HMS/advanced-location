@@ -4,48 +4,129 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".MainActivity">
 
     <Button
-        android:id="@+id/buttonStartService"
+        android:id="@+id/buttonRequestLocationUpdates"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Start Service"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="20dp"
+        android:text="Request Location Updates"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
+        android:id="@+id/buttonStopLocationUpdates"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="Stop Location Updates"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/buttonRequestLocationUpdates" />
+
+    <Button
         android:id="@+id/buttonGetCurrentLocation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:text="Get Current Location"
-        app:layout_constraintTop_toBottomOf="@+id/buttonStartService"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonStopLocationUpdates" />
+
     <Button
         android:id="@+id/buttonGetLastLocation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:text="Get Last Location"
-        app:layout_constraintTop_toBottomOf="@+id/buttonGetCurrentLocation"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonGetCurrentLocation" />
+
+
     <Button
-        android:id="@+id/buttonClearDB"
+        android:id="@+id/buttonRequestBackgroundLocation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Clear DB"
-        app:layout_constraintTop_toBottomOf="@+id/buttonGetLastLocation"
+        android:layout_marginTop="10dp"
+        android:text="Request Background Location"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/buttonGetLastLocation" />
+
     <Button
-        android:id="@+id/buttonStopUpdate"
+        android:id="@+id/buttonStopBackgroundLocation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Stop Background Update"
-        app:layout_constraintTop_toBottomOf="@+id/buttonClearDB"
+        android:layout_marginTop="10dp"
+        android:text="Stop Background Location"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonRequestBackgroundLocation" />
+
+    <Button
+        android:id="@+id/buttonGetActivityType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="Request Activity Type"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonStopBackgroundLocation" />
+
+    <TextView
+        android:id="@+id/labelLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="15dp"
+        android:text="Location"
+        android:textSize="15sp"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonGetActivityType" />
+
+
+    <TextView
+        android:id="@+id/tvLocation"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="25dp"
+        android:background="@drawable/border"
+        android:padding="13dp"
+        android:text=""
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/labelLocation" />
+
+    <TextView
+        android:id="@+id/labelActivityType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="15dp"
+        android:text="Activity Type"
+        android:textSize="15sp"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvLocation" />
+
+    <TextView
+        android:id="@+id/tvActivityType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="7dp"
+        android:text="-"
+        android:textSize="21sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/labelActivityType" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

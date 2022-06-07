@@ -14,6 +14,8 @@ import com.hms.advancedlocationlibrary.database.dto.LocationDto
 import com.hms.advancedlocationlibrary.utils.Constants.FROM_ACTIVITY
 import com.hms.advancedlocationlibrary.utils.Constants.INTERVAL
 import com.hms.advancedlocationlibrary.utils.Constants.LOG_PREFIX
+import com.hms.advancedlocationlibrary.utils.Constants.NOTIFICATION_DESCRIPTION
+import com.hms.advancedlocationlibrary.utils.Constants.NOTIFICATION_TITLE
 import com.hms.advancedlocationlibrary.utils.NotificationUtils
 import com.hms.advancedlocationlibrary.utils.Utils
 
@@ -75,10 +77,15 @@ internal class LocationService : Service() {
     /**
      *  Displays notification and starts Foreground service.
      */
-    private fun start(activityClass: Class<out Activity>?) {
+    private fun start(titleP: String?, descriptionP: String?,activityClass: Class<out Activity>?) {
         startForeground(
             ONGOING_NOTIFICATION_ID,
-            NotificationUtils.getForegroundServiceNotification(applicationContext, activityClass)
+            NotificationUtils.getForegroundServiceNotification(
+                applicationContext,
+                titleP,
+                descriptionP,
+                activityClass
+            )
         )
     }
 
@@ -89,15 +96,17 @@ internal class LocationService : Service() {
     private fun handleIntent(intent: Intent?) {
         if (intent != null) {
             val activityName = intent.getStringExtra(FROM_ACTIVITY)
+            val title = intent.getStringExtra(NOTIFICATION_TITLE)
+            val description = intent.getStringExtra(NOTIFICATION_DESCRIPTION)
+            val intervalTime = intent.getLongExtra(INTERVAL,INTERVAL_15_SECONDS)
 
-            if (activityName != null) {
+            if (activityName != null && title != null && description != null) {
                 val activityClass = Class.forName(activityName).asSubclass(Activity::class.java)
-                start(activityClass)
+                start(title, description, activityClass)
             } else {
-                start(null)
+                start(null,null,null)
             }
 
-            val intervalTime = intent.getLongExtra(INTERVAL,INTERVAL_15_SECONDS)
             startLocationSharing(intervalTime)
 
         } else {

@@ -126,10 +126,8 @@ internal class PermissionManager(private val context: Context) {
 
                     for (permission in result) {
                         if (permission.key == Manifest.permission.ACCESS_FINE_LOCATION && permission.value) {
-                            Log.d(TAG, "DDDDDDDDDDDDDDDD")
                             locationPermitted = true
                         } else if (permission.key == Manifest.permission.ACCESS_BACKGROUND_LOCATION && permission.value) {
-                            Log.d(TAG, "EEEEEEEEEEEEEEE")
                             backgroundPermitted = true
                         }
                     }

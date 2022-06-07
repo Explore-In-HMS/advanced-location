@@ -5,14 +5,13 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import com.hms.advancedlocationlibrary.data.UpdateInterval
 import com.hms.advancedlocationlibrary.data.UpdateInterval.Companion.INTERVAL_15_SECONDS
 import com.hms.advancedlocationlibrary.data.UpdateInterval.Companion.INTERVAL_30_SECONDS
 import com.hms.advancedlocationlibrary.data.UpdateInterval.Companion.INTERVAL_FIVE_MINUTES
 import com.hms.advancedlocationlibrary.data.listeners.ResultListener
 import com.hms.advancedlocationlibrary.data.listeners.TaskListener
 import com.hms.advancedlocationlibrary.data.model.enums.LocationType
-import com.hms.advancedlocationlibrary.data.model.holders.*
+import com.hms.advancedlocationlibrary.data.model.holders.Position
 import com.hms.advancedlocationlibrary.database.ActivityTypeDatabase
 import com.hms.advancedlocationlibrary.database.ActivityTypeResult
 import com.hms.advancedlocationlibrary.database.BackgroundLocationResult
@@ -25,6 +24,8 @@ import com.hms.advancedlocationlibrary.utils.AdvancedLocationException
 import com.hms.advancedlocationlibrary.utils.Constants.FROM_ACTIVITY
 import com.hms.advancedlocationlibrary.utils.Constants.INTERVAL
 import com.hms.advancedlocationlibrary.utils.Constants.LOG_PREFIX
+import com.hms.advancedlocationlibrary.utils.Constants.NOTIFICATION_DESCRIPTION
+import com.hms.advancedlocationlibrary.utils.Constants.NOTIFICATION_TITLE
 import com.hms.advancedlocationlibrary.utils.Utils.getFragmentActivity
 import com.huawei.hms.location.LocationRequest
 import kotlinx.coroutines.CoroutineScope
@@ -218,23 +219,33 @@ class AdvancedLocation {
      *  Starts background location updates
      *
      *  @param activity is required for permission
+     *  @param notificationTitle is title for Notification that displayed along with foreground service (if Empty app name will be displayed)
+     *  @param notificationDescription is description for Notification that displayed along with foreground service(if Empty default desc will be displayed)
      *  @param updateInterval location update refresh frequency (Default value = 5 Mins)
      *  @returns BackgroundLocationResult that accesses to RoomDB (only get)
      */
     @Throws(AdvancedLocationException::class)
     fun startBackgroundLocationUpdates(
         activity: Activity,
+        notificationTitle : String,
+        notificationDescription : String,
         updateInterval : Long = INTERVAL_FIVE_MINUTES
     ) : BackgroundLocationResult {
         val methodName = this::startBackgroundLocationUpdates.name
         Log.d(TAG, "$methodName()")
         val fragmentActivity = getFragmentActivity(activity)
 
-        Intent(mContext, LocationService::class.java).also {
-            it.putExtra(INTERVAL, updateInterval)
-            it.putExtra(FROM_ACTIVITY, fragmentActivity.javaClass.name)
-            mContext.startForegroundService(it)
-        }
+        mPermissionManager.doWithLocationPermission(
+            fragmentActivity,{
+            Intent(mContext, LocationService::class.java).also {
+                it.putExtra(NOTIFICATION_TITLE, notificationTitle)
+                it.putExtra(NOTIFICATION_DESCRIPTION, notificationDescription)
+                it.putExtra(INTERVAL, updateInterval)
+                it.putExtra(FROM_ACTIVITY, fragmentActivity.javaClass.name)
+                mContext.startForegroundService(it)
+            }
+        }, true)
+
 
         return mBackgroundLocationResult
     }
@@ -254,11 +265,16 @@ class AdvancedLocation {
      *  Requests the current activity type and stores the result to Room DB
      */
     @Throws(AdvancedLocationException::class)
-    fun getActivityType() : ActivityTypeResult {
+    fun getActivityType(
+        activity: Activity
+    ) : ActivityTypeResult {
         val methodName = this::getActivityType.name
         Log.d(TAG, "$methodName()")
+        val fragmentActivity = getFragmentActivity(activity)
 
-        mActivityManager.createActivityIdentificationRequest(INTERVAL_30_SECONDS)
+        mPermissionManager.doWithActivityPermission(fragmentActivity){
+            mActivityManager.createActivityIdentificationRequest(INTERVAL_30_SECONDS)
+        }
 
         return mActivityTypeResult
     }

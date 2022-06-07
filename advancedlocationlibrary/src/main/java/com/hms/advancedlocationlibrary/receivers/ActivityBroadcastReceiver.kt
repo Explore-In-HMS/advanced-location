@@ -12,7 +12,7 @@ internal class ActivityBroadcastReceiver : BroadcastReceiver() {
 
     companion object {
         private const val TAG = "${LOG_PREFIX}ActivityBroadcastReceiver"
-        val ACTION_PROCESS_ACTIVITY = "${AdvancedLocation.getContext().packageName}.ACTION_PROCESS_ACTIVITY"
+        const val ACTION_PROCESS_ACTIVITY = "com.hms.advancedlocation.ACTION_PROCESS_ACTIVITY"
     }
 
     override fun onReceive(context: Context?, intent: Intent?) {
