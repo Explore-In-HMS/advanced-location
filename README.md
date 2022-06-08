@@ -159,3 +159,4 @@ advancedLocation.clearActivityTypeDB()
 MIT License
 
 Copyright (c) 2022 Talha ÖZ
+
