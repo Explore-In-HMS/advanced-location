@@ -17,7 +17,9 @@ A powerful library for easy implementation of HMS Location Kit. 💙
 - Activity Type Recognition
 
 ## Setup
-##### build.gradle (project)
+
+`build.gradle (project)`
+
 ```gradle
 allprojects {
     repositories {
@@ -27,14 +29,17 @@ allprojects {
 }
 ```
 
-#### build.gradle (app)
+`build.gradle (app)`
+
 ```gradle
 dependencies {
     ...
     implementation 'com.github.talhaoz:advanced-location:1.1.0
 }
 ```
-#### agconnect-services.json
+
+`agconnect-services.json`
+
 ```app
 Add agconnect-services.json file under app directory
 ```
