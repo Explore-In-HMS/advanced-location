@@ -46,19 +46,22 @@ class AdvancedLocation {
     fun requestLocationUpdates(
         activity: Activity,
         locationType: LocationType,
-        interval : Long = INTERVAL_15_SECONDS,
+        interval: Long = INTERVAL_15_SECONDS,
         resultListener: ResultListener<Position>
     ) {
         val methodName = "requestLocationUpdates"
         Log.d(TAG, "$methodName()")
         val fragmentActivity = getFragmentActivity(activity)
 
-        mPermissionManager.doWithLocationPermission(fragmentActivity,{
-            when(locationType){
-                LocationType.HIGH_ACCURACY -> requestHighAccuracyLocation(interval,resultListener)
-                LocationType.EFFICIENT_POWER -> requestEfficientPowerLocation(interval,resultListener)
-                LocationType.LOW_POWER -> requestLowPowerLocation(interval,resultListener)
-                LocationType.PASSIVE -> requestPassiveLocation(interval,resultListener)
+        mPermissionManager.doWithLocationPermission(fragmentActivity, {
+            when (locationType) {
+                LocationType.HIGH_ACCURACY -> requestHighAccuracyLocation(interval, resultListener)
+                LocationType.EFFICIENT_POWER -> requestEfficientPowerLocation(
+                    interval,
+                    resultListener
+                )
+                LocationType.LOW_POWER -> requestLowPowerLocation(interval, resultListener)
+                LocationType.PASSIVE -> requestPassiveLocation(interval, resultListener)
             }
         })
     }
@@ -74,15 +77,15 @@ class AdvancedLocation {
     @Throws(AdvancedLocationException::class)
     fun requestCustomLocationUpdates(
         activity: Activity,
-        interval : Long = INTERVAL_15_SECONDS,
-        smallestDisplacement : Float = 0F,
+        interval: Long = INTERVAL_15_SECONDS,
+        smallestDisplacement: Float = 0F,
         resultListener: ResultListener<Position>
     ) {
         val methodName = "requestLocationUpdates"
         Log.d(TAG, "$methodName()")
         val fragmentActivity = getFragmentActivity(activity)
 
-        mPermissionManager.doWithLocationPermission(fragmentActivity,{
+        mPermissionManager.doWithLocationPermission(fragmentActivity, {
             mLocationManager.startCustomLocationUpdates(
                 interval,
                 smallestDisplacement,
@@ -117,7 +120,11 @@ class AdvancedLocation {
         val methodName = this::requestHighAccuracyLocation.name
         Log.d(TAG, "$methodName()")
 
-        mLocationManager.startLocationUpdates(LocationRequest.PRIORITY_HIGH_ACCURACY, interval, resultListener)
+        mLocationManager.startLocationUpdates(
+            LocationRequest.PRIORITY_HIGH_ACCURACY,
+            interval,
+            resultListener
+        )
     }
 
     /**
@@ -134,7 +141,11 @@ class AdvancedLocation {
         Log.d(TAG, "$methodName()")
 
         mPermissionManager.doIfLocationPermitted {
-            mLocationManager.startLocationUpdates(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY, interval, resultListener)
+            mLocationManager.startLocationUpdates(
+                LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY,
+                interval,
+                resultListener
+            )
         }
     }
 
@@ -152,7 +163,11 @@ class AdvancedLocation {
         Log.d(TAG, "$methodName()")
 
         mPermissionManager.doIfLocationPermitted {
-            mLocationManager.startLocationUpdates(LocationRequest.PRIORITY_LOW_POWER, interval, resultListener)
+            mLocationManager.startLocationUpdates(
+                LocationRequest.PRIORITY_LOW_POWER,
+                interval,
+                resultListener
+            )
         }
     }
 
@@ -170,7 +185,11 @@ class AdvancedLocation {
         Log.d(TAG, "$methodName()")
 
         mPermissionManager.doIfLocationPermitted {
-            mLocationManager.startLocationUpdates(LocationRequest.PRIORITY_NO_POWER, interval, resultListener)
+            mLocationManager.startLocationUpdates(
+                LocationRequest.PRIORITY_NO_POWER,
+                interval,
+                resultListener
+            )
         }
     }
 
@@ -227,24 +246,25 @@ class AdvancedLocation {
     @Throws(AdvancedLocationException::class)
     fun startBackgroundLocationUpdates(
         activity: Activity,
-        notificationTitle : String,
-        notificationDescription : String,
-        updateInterval : Long = INTERVAL_FIVE_MINUTES
-    ) : BackgroundLocationResult {
+        notificationTitle: String,
+        notificationDescription: String,
+        updateInterval: Long = INTERVAL_FIVE_MINUTES
+    ): BackgroundLocationResult {
         val methodName = this::startBackgroundLocationUpdates.name
         Log.d(TAG, "$methodName()")
         val fragmentActivity = getFragmentActivity(activity)
 
         mPermissionManager.doWithLocationPermission(
-            fragmentActivity,{
-            Intent(mContext, LocationService::class.java).also {
-                it.putExtra(NOTIFICATION_TITLE, notificationTitle)
-                it.putExtra(NOTIFICATION_DESCRIPTION, notificationDescription)
-                it.putExtra(INTERVAL, updateInterval)
-                it.putExtra(FROM_ACTIVITY, fragmentActivity.javaClass.name)
-                mContext.startForegroundService(it)
-            }
-        }, true)
+            fragmentActivity, {
+                Intent(mContext, LocationService::class.java).also {
+                    it.putExtra(NOTIFICATION_TITLE, notificationTitle)
+                    it.putExtra(NOTIFICATION_DESCRIPTION, notificationDescription)
+                    it.putExtra(INTERVAL, updateInterval)
+                    it.putExtra(FROM_ACTIVITY, fragmentActivity.javaClass.name)
+                    mContext.startForegroundService(it)
+                }
+            }, true
+        )
 
 
         return mBackgroundLocationResult
@@ -267,12 +287,12 @@ class AdvancedLocation {
     @Throws(AdvancedLocationException::class)
     fun getActivityType(
         activity: Activity
-    ) : ActivityTypeResult {
+    ): ActivityTypeResult {
         val methodName = this::getActivityType.name
         Log.d(TAG, "$methodName()")
         val fragmentActivity = getFragmentActivity(activity)
 
-        mPermissionManager.doWithActivityPermission(fragmentActivity){
+        mPermissionManager.doWithActivityPermission(fragmentActivity) {
             mActivityManager.createActivityIdentificationRequest(INTERVAL_30_SECONDS)
         }
 
@@ -309,13 +329,22 @@ class AdvancedLocation {
         internal val mPermissionManager by lazy { PermissionManager(mContext) }
         internal val mLocationManager by lazy { LocationManager(mContext) }
         internal val mActivityManager by lazy { ActivityManager(mContext) }
-        internal val mLocationDatabase by lazy { LocationDatabase.getLocationDatabase(mContext)?.locationDao() }
+        internal val mLocationDatabase by lazy {
+            LocationDatabase.getLocationDatabase(mContext)?.locationDao()
+        }
         private val mBackgroundLocationResult by lazy { BackgroundLocationResult() }
-        internal val mActivityTypeDatabase by lazy { ActivityTypeDatabase.getActivityTypeDatabase(
-            mContext
-        )?.activityTypeDao() }
+        internal val mActivityTypeDatabase by lazy {
+            ActivityTypeDatabase.getActivityTypeDatabase(
+                mContext
+            )?.activityTypeDao()
+        }
         private val mActivityTypeResult by lazy { ActivityTypeResult() }
-        private val mLocationBackgroundService  by lazy { Intent(mContext, LocationService::class.java) }
+        private val mLocationBackgroundService by lazy {
+            Intent(
+                mContext,
+                LocationService::class.java
+            )
+        }
 
         private val mainJob = SupervisorJob()
         internal val coroutineScopeIO = CoroutineScope(Dispatchers.IO + mainJob)

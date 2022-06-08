@@ -1,5 +1,6 @@
 package com.hms.advancedlocationlibrary.managers
 
+import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
@@ -26,13 +27,19 @@ internal class ActivityManager(private val context: Context) {
 
     private val mActivityIdentificationService = ActivityIdentification.getService(context)
 
+    @SuppressLint("UnspecifiedImmutableFlag")
     @JvmName("getPendingIntent2")
     private fun getPendingIntent(
         action: String = ActivityBroadcastReceiver.ACTION_PROCESS_ACTIVITY
     ): PendingIntent? {
         val intent = Intent(context, ActivityBroadcastReceiver::class.java)
         intent.action = action
-        return PendingIntent.getBroadcast(context, PENDING_INTENT_REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        return PendingIntent.getBroadcast(
+            context,
+            PENDING_INTENT_REQUEST_CODE,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT
+        )
     }
 
     fun createActivityIdentificationRequest(@UpdateInterval interval: Long) {
@@ -51,13 +58,13 @@ internal class ActivityManager(private val context: Context) {
      */
     fun removeActivityIdentificationRequest(action: String) {
         mActivityIdentificationService
-                .deleteActivityIdentificationUpdates(getPendingIntent(action))
-                .addOnSuccessListener {
-                    Log.d(TAG, "removeActivityIdentificationRequest-onSuccess")
-                }
-                .addOnFailureListener {
-                    Log.e(TAG, "removeActivityIdentificationRequest-onFailure --> Error: ", it)
-                }
+            .deleteActivityIdentificationUpdates(getPendingIntent(action))
+            .addOnSuccessListener {
+                Log.d(TAG, "removeActivityIdentificationRequest-onSuccess")
+            }
+            .addOnFailureListener {
+                Log.e(TAG, "removeActivityIdentificationRequest-onFailure --> Error: ", it)
+            }
     }
 
     /**
@@ -76,12 +83,11 @@ internal class ActivityManager(private val context: Context) {
 
             if (activityData.possibility >= MIN_ACCEPTED_ACTIVITY_POSSIBILITY) {
                 try {
-
                     mActivityTypeDatabase?.insertActivityType(
                         ActivityTypeDto(
                             activityTypeCode = activityData.identificationActivity
-                            )
                         )
+                    )
                 } catch (e: AdvancedLocationException) {
                     Log.e(TAG, "getActivityData --> Error: ", e)
                 }

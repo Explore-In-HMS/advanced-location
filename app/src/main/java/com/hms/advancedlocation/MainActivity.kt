@@ -1,5 +1,6 @@
 package com.hms.advancedlocation
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -38,6 +39,7 @@ class MainActivity : AppCompatActivity() {
         binding.tvLocation.movementMethod = ScrollingMovementMethod()
     }
 
+    @SuppressLint("SetTextI18n")
     private fun initClickListeners() {
         binding.buttonRequestLocationUpdates.setOnClickListener {
             binding.tvLocation.text = ""
@@ -103,6 +105,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun getCurrentLocation() {
         advancedLocation.getCurrentLocation(
             this
@@ -115,6 +118,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun getLastLocation() {
         advancedLocation.getLastLocation(
             this

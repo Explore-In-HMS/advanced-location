@@ -1,4 +1,3 @@
-
 package com.hms.advancedlocationlibrary.data.listeners
 
 fun interface ResultListener<T> {

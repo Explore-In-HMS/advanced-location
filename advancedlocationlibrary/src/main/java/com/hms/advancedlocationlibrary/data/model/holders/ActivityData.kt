@@ -1,4 +1,3 @@
-
 package com.hms.advancedlocationlibrary.data.model.holders
 
 data class ActivityData(

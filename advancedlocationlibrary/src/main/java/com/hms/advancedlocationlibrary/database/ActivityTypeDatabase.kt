@@ -6,8 +6,10 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.hms.advancedlocationlibrary.database.dto.ActivityTypeDto
 
-@Database(entities = [ActivityTypeDto::class], version = 1,
-    exportSchema = true)
+@Database(
+    entities = [ActivityTypeDto::class], version = 1,
+    exportSchema = true
+)
 abstract class ActivityTypeDatabase : RoomDatabase() {
 
     abstract fun activityTypeDao(): ActivityTypeDao

@@ -1,6 +1,6 @@
-
 package com.hms.advancedlocationlibrary.providers
 
+import android.annotation.SuppressLint
 import android.content.ContentProvider
 import android.content.ContentValues
 import android.content.Context
@@ -14,6 +14,7 @@ internal class AdvancedLocationInitProvider : ContentProvider() {
     companion object {
         private const val TAG = "${LOG_PREFIX}InitProvider"
 
+        @SuppressLint("StaticFieldLeak")
         private var context: Context? = null
 
         @JvmName("setContext1")
@@ -35,7 +36,13 @@ internal class AdvancedLocationInitProvider : ContentProvider() {
         return true
     }
 
-    override fun query(uri: Uri, projection: Array<out String>?, selection: String?, selectionArgs: Array<out String>?, sortOrder: String?): Nothing? = null
+    override fun query(
+        uri: Uri,
+        projection: Array<out String>?,
+        selection: String?,
+        selectionArgs: Array<out String>?,
+        sortOrder: String?
+    ): Nothing? = null
 
     override fun getType(uri: Uri): Nothing? = null
 
@@ -43,5 +50,10 @@ internal class AdvancedLocationInitProvider : ContentProvider() {
 
     override fun delete(uri: Uri, selection: String?, selectionArgs: Array<out String>?) = 0
 
-    override fun update(uri: Uri, values: ContentValues?, selection: String?, selectionArgs: Array<out String>?) = 0
+    override fun update(
+        uri: Uri,
+        values: ContentValues?,
+        selection: String?,
+        selectionArgs: Array<out String>?
+    ) = 0
 }

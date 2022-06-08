@@ -70,30 +70,33 @@ internal class LocationManager(private val context: Context) {
             build()
         }
         settingsClient.checkLocationSettings(locationSettingsRequest)
-                .addOnSuccessListener {
-                    mLocationSettings = it.locationSettingsStates
-                    Log.d(TAG, "checkLocationSettings --> Success.")
-                    isAvailable = true
-                }
-                .addOnFailureListener {
-                    Log.w(TAG, "checkLocationSettings --> Failure: ", it)
+            .addOnSuccessListener {
+                mLocationSettings = it.locationSettingsStates
+                Log.d(TAG, "checkLocationSettings --> Success.")
+                isAvailable = true
+            }
+            .addOnFailureListener {
+                Log.w(TAG, "checkLocationSettings --> Failure: ", it)
 
-                    if (isWaitingForActivityResult.not() && activity != null) {
-                        if ((it as ApiException).statusCode == LocationSettingsStatusCodes.RESOLUTION_REQUIRED) {
-                            try {
-                                val rae: ResolvableApiException = it as ResolvableApiException
-                                rae.startResolutionForResult(activity, 0)
-                                isWaitingForActivityResult = true
-                            } catch (sie: IntentSender.SendIntentException) {
-                                sie.printStackTrace()
-                                isWaitingForActivityResult = false
-                            }
+                if (isWaitingForActivityResult.not() && activity != null) {
+                    if ((it as ApiException).statusCode == LocationSettingsStatusCodes.RESOLUTION_REQUIRED) {
+                        isWaitingForActivityResult = try {
+                            val rae: ResolvableApiException = it as ResolvableApiException
+                            rae.startResolutionForResult(activity, 0)
+                            true
+                        } catch (sie: IntentSender.SendIntentException) {
+                            sie.printStackTrace()
+                            false
                         }
                     }
                 }
+            }
     }
 
-    private suspend fun checkAvailability(activity: FragmentActivity? = null, block: (() -> Unit)? = null) = coroutineScope.launch {
+    private suspend fun checkAvailability(
+        activity: FragmentActivity? = null,
+        block: (() -> Unit)? = null
+    ) = coroutineScope.launch {
         while (isAvailable.not()) {
             Log.d(TAG, "checkAvailability --> Not available.")
             delay(DELAY_TIME)
@@ -101,8 +104,11 @@ internal class LocationManager(private val context: Context) {
             if (availabilityTrial > TRIAL_COUNT) {
                 init(activity)
                 availabilityTrial = 0
-                delay(DELAY_TIME*4)
-                Log.d(TAG, "checkAvailability --> Not available. Initializing LocationManager again...")
+                delay(DELAY_TIME * 4)
+                Log.d(
+                    TAG,
+                    "checkAvailability --> Not available. Initializing LocationManager again..."
+                )
             }
         }
         block?.invoke()
@@ -121,8 +127,8 @@ internal class LocationManager(private val context: Context) {
      *  @param listener obtained results as Position with ResultListener.
      */
     fun startLocationUpdates(
-        priority : Int,
-        interval : Long = INTERVAL_0_SECONDS,
+        priority: Int,
+        interval: Long = INTERVAL_0_SECONDS,
         listener: ResultListener<Position>
     ) {
         Log.d(TAG, "startCustomLocationUpdates()")
@@ -143,8 +149,8 @@ internal class LocationManager(private val context: Context) {
      *  @param listener obtained results as Position with ResultListener.
      */
     fun startCustomLocationUpdates(
-        interval : Long = INTERVAL_0_SECONDS,
-        smallestDisplacement : Float = 0F,
+        interval: Long = INTERVAL_0_SECONDS,
+        smallestDisplacement: Float = 0F,
         listener: ResultListener<Position>
     ) {
         Log.d(TAG, "startCustomLocationUpdates()")
@@ -158,7 +164,7 @@ internal class LocationManager(private val context: Context) {
     }
 
     private fun requestLocationUpdates(
-        locationRequest : LocationRequest,
+        locationRequest: LocationRequest,
         listener: ResultListener<Position>
     ) {
         mLocationCallback = AdvancedLocationCallback(listener)
@@ -169,7 +175,8 @@ internal class LocationManager(private val context: Context) {
         )
     }
 
-    inner class AdvancedLocationCallback(private val listener: ResultListener<Position>) : LocationCallback() {
+    inner class AdvancedLocationCallback(private val listener: ResultListener<Position>) :
+        LocationCallback() {
 
         override fun onLocationAvailability(availability: LocationAvailability?) {
             super.onLocationAvailability(availability)
@@ -182,7 +189,7 @@ internal class LocationManager(private val context: Context) {
 
             result?.also {
                 val location = it.locations.first()
-                val position = Position(location.latitude,location.longitude)
+                val position = Position(location.latitude, location.longitude)
                 listener.onResult(position)
             }
         }
@@ -191,10 +198,11 @@ internal class LocationManager(private val context: Context) {
     /**
      *  Gets last known location of user.
      */
-    fun getLastLocation(activity: FragmentActivity, listener: TaskListener<Position>) = coroutineScopeIO.launch {
-        Log.d(TAG, "getLastLocation()")
-        checkAvailability(activity) {
-            val task = mFusedLocationProviderClient?.lastLocation
+    fun getLastLocation(activity: FragmentActivity, listener: TaskListener<Position>) =
+        coroutineScopeIO.launch {
+            Log.d(TAG, "getLastLocation()")
+            checkAvailability(activity) {
+                val task = mFusedLocationProviderClient?.lastLocation
                     ?.addOnSuccessListener {
                         if (it != null) {
                             mLocation = it
@@ -209,20 +217,20 @@ internal class LocationManager(private val context: Context) {
                         listener.onCompleted(Result.Failure(it))
                     }
 
-            if (task == null) {
-                Log.d(TAG, "getLastLocation --> Initializing LocationManager...")
-                init()
-                listener.onCompleted(
+                if (task == null) {
+                    Log.d(TAG, "getLastLocation --> Initializing LocationManager...")
+                    init()
+                    listener.onCompleted(
                         Result.Failure(
-                                AdvancedLocationException(
-                                        FAILED_TO_START_TASK,
-                                        "FusedLocationProvider.getLastLocation task is null."
-                                )
+                            AdvancedLocationException(
+                                FAILED_TO_START_TASK,
+                                "FusedLocationProvider.getLastLocation task is null."
+                            )
                         )
-                )
+                    )
+                }
             }
         }
-    }
 
     /**
      *  Gets current location with one time request only.
@@ -242,22 +250,28 @@ internal class LocationManager(private val context: Context) {
 
                     override fun onLocationAvailability(availability: LocationAvailability?) {
                         super.onLocationAvailability(availability)
-                        Log.d(TAG, "getCurrentLocation-onLocationAvailability --> Availability: $availability")
+                        Log.d(
+                            TAG,
+                            "getCurrentLocation-onLocationAvailability --> Availability: $availability"
+                        )
                     }
 
                     override fun onLocationResult(result: LocationResult?) {
                         super.onLocationResult(result)
-                        Log.d(TAG, "getCurrentLocation-onLocationResult --> LocationResult: $result")
+                        Log.d(
+                            TAG,
+                            "getCurrentLocation-onLocationResult --> LocationResult: $result"
+                        )
                         result?.lastLocation?.also {
                             listener.onResult(Position(it.latitude, it.longitude))
                         }
                     }
-                }, Looper.getMainLooper())
+                }, Looper.getMainLooper()
+            )
 
         if (task == null) {
             Log.d(TAG, "getLastLocation --> Initializing LocationManager...")
             init()
         }
     }
-
 }
