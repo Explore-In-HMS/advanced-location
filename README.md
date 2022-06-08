@@ -2,7 +2,6 @@
 
 [![Licence MIT](https://img.shields.io/badge/licence-MIT-blue.svg)](https://github.com/talhaoz/advanced-location/blob/dev/LICENCE)
 [![Release](https://jitpack.io/v/talhaoz/advanced-location.svg)](https://jitpack.io/#talhaoz/advanced-location)
-[![Downloads](https://jitpack.io/v/talhaoz/advanced-location/month.svg)](#download)
 
 A powerful library for easy implementation of HMS Location Kit. 💙
 
