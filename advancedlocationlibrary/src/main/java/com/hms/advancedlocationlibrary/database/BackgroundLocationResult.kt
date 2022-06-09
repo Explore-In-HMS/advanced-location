@@ -5,11 +5,11 @@ import com.hms.advancedlocationlibrary.database.dto.LocationDto
 
 class BackgroundLocationResult {
 
-    fun getAllLocationUpdates() : List<LocationDto>? {
+    fun getAllLocationUpdates(): List<LocationDto>? {
         return mLocationDatabase?.getAllLocationUpdates()
     }
 
-    fun getLastLocation() : LocationDto? {
+    fun getLastLocation(): LocationDto? {
         return mLocationDatabase?.getLastLocation()
     }
 }

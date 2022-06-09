@@ -1,4 +1,3 @@
-
 package com.hms.advancedlocationlibrary.utils.device
 
 import android.annotation.SuppressLint

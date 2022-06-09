@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import com.hms.advancedlocationlibrary.AdvancedLocation
 import com.hms.advancedlocationlibrary.AdvancedLocation.Companion.mActivityManager
 import com.hms.advancedlocationlibrary.utils.Constants.LOG_PREFIX
 

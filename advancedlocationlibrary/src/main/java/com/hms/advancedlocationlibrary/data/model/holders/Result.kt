@@ -1,10 +1,9 @@
-
 package com.hms.advancedlocationlibrary.data.model.holders
 
 sealed class Result<T> {
 
-    data class Success<T>(var data: T): Result<T>()
-    data class Failure<T>(var exception: Exception? = null): Result<T>()
+    data class Success<T>(var data: T) : Result<T>()
+    data class Failure<T>(var exception: Exception? = null) : Result<T>()
 
     fun isSuccess(): Boolean {
         return this is Success

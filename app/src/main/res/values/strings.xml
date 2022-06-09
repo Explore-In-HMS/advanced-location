@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">AdvancedLocation</string>
+    <string name="request_location_updates">Request Location Updates</string>
+    <string name="stop_location_updates">Stop Location Updates</string>
+    <string name="get_current_location">Get Current Location</string>
+    <string name="get_last_location">Get Last Location</string>
+    <string name="request_background_location">Request Background Location</string>
+    <string name="stop_background_location">Stop Background Location</string>
+    <string name="request_activity_type">Request Activity Type</string>
+    <string name="location">Location</string>
+    <string name="activity_type">Activity Type</string>
 </resources>

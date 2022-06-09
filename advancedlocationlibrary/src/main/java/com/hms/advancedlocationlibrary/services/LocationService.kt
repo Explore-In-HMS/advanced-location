@@ -77,7 +77,7 @@ internal class LocationService : Service() {
     /**
      *  Displays notification and starts Foreground service.
      */
-    private fun start(titleP: String?, descriptionP: String?,activityClass: Class<out Activity>?) {
+    private fun start(titleP: String?, descriptionP: String?, activityClass: Class<out Activity>?) {
         startForeground(
             ONGOING_NOTIFICATION_ID,
             NotificationUtils.getForegroundServiceNotification(
@@ -98,13 +98,13 @@ internal class LocationService : Service() {
             val activityName = intent.getStringExtra(FROM_ACTIVITY)
             val title = intent.getStringExtra(NOTIFICATION_TITLE)
             val description = intent.getStringExtra(NOTIFICATION_DESCRIPTION)
-            val intervalTime = intent.getLongExtra(INTERVAL,INTERVAL_15_SECONDS)
+            val intervalTime = intent.getLongExtra(INTERVAL, INTERVAL_15_SECONDS)
 
             if (activityName != null && title != null && description != null) {
                 val activityClass = Class.forName(activityName).asSubclass(Activity::class.java)
                 start(title, description, activityClass)
             } else {
-                start(null,null,null)
+                start(null, null, null)
             }
 
             startLocationSharing(intervalTime)
@@ -117,7 +117,7 @@ internal class LocationService : Service() {
     /**
      *  Clear DB values written before
      */
-    private fun clearDB(){
+    private fun clearDB() {
         mLocationDatabase?.clearDB()
     }
 }

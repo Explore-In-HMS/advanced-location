@@ -6,8 +6,10 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.hms.advancedlocationlibrary.database.dto.LocationDto
 
-@Database(entities = [LocationDto::class], version = 1,
-    exportSchema = true)
+@Database(
+    entities = [LocationDto::class], version = 1,
+    exportSchema = true
+)
 abstract class LocationDatabase : RoomDatabase() {
 
     abstract fun locationDao(): LocationDao

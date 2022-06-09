@@ -1,4 +1,3 @@
-
 package com.hms.advancedlocationlibrary.managers
 
 import android.Manifest
@@ -66,7 +65,8 @@ internal class PermissionManager(private val context: Context) {
                 function()
             } else {
                 throw AdvancedLocationException(MISSING_PERMISSION, LOCATION_PERMISSION_BACKGROUND)
-            }        } else {
+            }
+        } else {
             if (hasPermission(LOCATION_PERMISSION)) {
                 function()
             } else {
@@ -87,7 +87,7 @@ internal class PermissionManager(private val context: Context) {
         }
     }
 
-    fun doWithActivityPermission(activity: FragmentActivity, function:() -> Unit) {
+    fun doWithActivityPermission(activity: FragmentActivity, function: () -> Unit) {
         Log.d(TAG, "doWithActivityPermission()")
 
         if (isAboveQ() && hasPermission(ACTIVITY_PERMISSION_Q)) {
@@ -110,7 +110,11 @@ internal class PermissionManager(private val context: Context) {
         }
     }
 
-    fun doWithLocationPermission(activity: FragmentActivity, function:() -> Unit, background: Boolean = false) = coroutineScopeIO.launch {
+    fun doWithLocationPermission(
+        activity: FragmentActivity,
+        function: () -> Unit,
+        background: Boolean = false
+    ) = coroutineScopeIO.launch {
 
         //checkIfResuming(activity)
 
@@ -166,7 +170,10 @@ internal class PermissionManager(private val context: Context) {
         }
     }
 
-    private fun requestLocationPermission(activity: FragmentActivity, listener: ResultListener<MutableMap<String, Boolean>>) {
+    private fun requestLocationPermission(
+        activity: FragmentActivity,
+        listener: ResultListener<MutableMap<String, Boolean>>
+    ) {
         Log.d(TAG, "requestLocationPermission()")
 
         when {
@@ -189,13 +196,20 @@ internal class PermissionManager(private val context: Context) {
         }
     }
 
-    private fun requestPermission(activity: FragmentActivity, permissions: Array<String>, listener: ResultListener<MutableMap<String, Boolean>>) {
+    private fun requestPermission(
+        activity: FragmentActivity,
+        permissions: Array<String>,
+        listener: ResultListener<MutableMap<String, Boolean>>
+    ) {
 
         if (permissions.size == 1) {
             Log.d(TAG, "requestPermission() Requesting single permission.")
 
             val resultLauncher =
-                activity.activityResultRegistry.register(PERMISSION_SINGLE, ActivityResultContracts.RequestPermission()) {
+                activity.activityResultRegistry.register(
+                    PERMISSION_SINGLE,
+                    ActivityResultContracts.RequestPermission()
+                ) {
                     val resultMap = HashMap<String, Boolean>()
                     resultMap[permissions.first()] = it
                     listener.onResult(resultMap)
@@ -205,7 +219,10 @@ internal class PermissionManager(private val context: Context) {
         } else if (permissions.size > 1) {
             Log.d(TAG, "requestPermission() Requesting multiple permissions.")
 
-            val resultLauncher = activity.activityResultRegistry.register(PERMISSION_MULTIPLE, ActivityResultContracts.RequestMultiplePermissions()) {
+            val resultLauncher = activity.activityResultRegistry.register(
+                PERMISSION_MULTIPLE,
+                ActivityResultContracts.RequestMultiplePermissions()
+            ) {
                 listener.onResult(it as MutableMap<String, Boolean>)
             }
 

@@ -7,66 +7,86 @@ import com.hms.advancedlocationlibrary.R
 
 enum class ActivityType {
 
-    VEHICLE
-    {
+    VEHICLE {
         override val code = 100
         override val type = "VEHICLE"
-        override val iconBitmap: Bitmap get() {
-            return BitmapFactory.decodeResource(AdvancedLocation.getContext().resources, R.drawable.ic_vehicle)
-        }
+        override val iconBitmap: Bitmap
+            get() {
+                return BitmapFactory.decodeResource(
+                    AdvancedLocation.getContext().resources,
+                    R.drawable.ic_vehicle
+                )
+            }
     },
-    BIKE
-    {
+    BIKE {
         override val code = 101
         override val type = "BIKE"
-        override val iconBitmap: Bitmap get() {
-            return BitmapFactory.decodeResource(AdvancedLocation.getContext().resources, R.drawable.ic_bike)
-        }
+        override val iconBitmap: Bitmap
+            get() {
+                return BitmapFactory.decodeResource(
+                    AdvancedLocation.getContext().resources,
+                    R.drawable.ic_bike
+                )
+            }
     },
-    FOOT
-    {
+    FOOT {
         override val code = 102
         override val type = "FOOT"
-        override val iconBitmap: Bitmap get() {
-            return BitmapFactory.decodeResource(AdvancedLocation.getContext().resources, R.drawable.ic_foot)
-        }
+        override val iconBitmap: Bitmap
+            get() {
+                return BitmapFactory.decodeResource(
+                    AdvancedLocation.getContext().resources,
+                    R.drawable.ic_foot
+                )
+            }
     },
-    STILL
-    {
+    STILL {
         override val code = 103
         override val type = "STILL"
-        override val iconBitmap: Bitmap get() {
-            return BitmapFactory.decodeResource(AdvancedLocation.getContext().resources, R.drawable.ic_still)
-        }
+        override val iconBitmap: Bitmap
+            get() {
+                return BitmapFactory.decodeResource(
+                    AdvancedLocation.getContext().resources,
+                    R.drawable.ic_still
+                )
+            }
     },
-    OTHERS
-    {
+    OTHERS {
         override val code = 104
         override val type = "OTHERS"
-        override val iconBitmap: Bitmap get() {
-            return BitmapFactory.decodeResource(AdvancedLocation.getContext().resources, R.drawable.ic_others)
-        }
+        override val iconBitmap: Bitmap
+            get() {
+                return BitmapFactory.decodeResource(
+                    AdvancedLocation.getContext().resources,
+                    R.drawable.ic_others
+                )
+            }
     },
-    WALKING
-    {
+    WALKING {
         override val code = 107
         override val type = "WALKING"
-        override val iconBitmap: Bitmap get() {
-            return BitmapFactory.decodeResource(AdvancedLocation.getContext().resources, R.drawable.ic_walking)
-        }
+        override val iconBitmap: Bitmap
+            get() {
+                return BitmapFactory.decodeResource(
+                    AdvancedLocation.getContext().resources,
+                    R.drawable.ic_walking
+                )
+            }
     },
-    RUNNING
-    {
+    RUNNING {
         override val code = 108
         override val type = "RUNNING"
-        override val iconBitmap: Bitmap get() {
-            return BitmapFactory.decodeResource(AdvancedLocation.getContext().resources, R.drawable.ic_running)
-        }
+        override val iconBitmap: Bitmap
+            get() {
+                return BitmapFactory.decodeResource(
+                    AdvancedLocation.getContext().resources,
+                    R.drawable.ic_running
+                )
+            }
     };
 
     companion object {
-
-        fun toString(activityType: Int? = 104) = when(activityType) {
+        fun toString(activityType: Int? = 104) = when (activityType) {
             VEHICLE.code -> VEHICLE.type
             BIKE.code -> BIKE.type
             FOOT.code -> FOOT.type
@@ -76,7 +96,7 @@ enum class ActivityType {
             else -> OTHERS.type
         }
 
-        fun getActivityType(activityCode: Int? = 104) = when(activityCode) {
+        fun getActivityType(activityCode: Int? = 104) = when (activityCode) {
             VEHICLE.code -> VEHICLE
             BIKE.code -> BIKE
             FOOT.code -> FOOT

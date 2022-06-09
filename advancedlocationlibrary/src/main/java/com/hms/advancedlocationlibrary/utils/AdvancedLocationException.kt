@@ -31,7 +31,7 @@ class AdvancedLocationException(type: Int = 0) : Exception() {
     fun getType() = errorType
 
     override val message: String
-        get() = when(errorType) {
+        get() = when (errorType) {
             UNKNOWN -> "${PREFIX}An unknown problem occurred. ${messageExtension ?: ""}"
             NO_INTERNET_CONNECTION -> "${PREFIX}No internet connection. ${messageExtension ?: ""}"
             FAILED_TO_START_TASK -> "${PREFIX}Failed to start the ordered task. ${messageExtension ?: ""}"

@@ -6,11 +6,11 @@ import com.hms.advancedlocationlibrary.database.dto.ActivityTypeDto
 
 class ActivityTypeResult {
 
-    fun getActivityType() : ActivityType? {
+    fun getActivityType(): ActivityType? {
         return mActivityTypeDatabase?.getActivityType()?.parse()
     }
 
-    private fun ActivityTypeDto.parse() : ActivityType {
+    private fun ActivityTypeDto.parse(): ActivityType {
         return ActivityType.getActivityType(this.activityTypeCode)
     }
 }

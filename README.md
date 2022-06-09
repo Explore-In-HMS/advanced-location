@@ -23,7 +23,9 @@ A powerful library for easy implementation of HMS Location Kit. 💙
 You can reach Demo app from [here](https://github.com/talhaoz/advanced-location/tree/dev/app)
 
 ## Setup
-##### build.gradle (project)
+
+`build.gradle (project)`
+
 ```gradle
 allprojects {
     repositories {
@@ -40,6 +42,7 @@ dependencies {
     implementation 'com.github.talhaoz:advanced-location:1.1.0
 }
 ```
+
 ##### agconnect-services.json
 ```app
 Add agconnect-services.json file under app directory

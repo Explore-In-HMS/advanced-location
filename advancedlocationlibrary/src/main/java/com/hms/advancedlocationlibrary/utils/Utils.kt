@@ -1,5 +1,6 @@
 package com.hms.advancedlocationlibrary.utils
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.graphics.drawable.AdaptiveIconDrawable
@@ -30,6 +31,7 @@ internal object Utils {
         }
     }
 
+    @SuppressLint("ObsoleteSdkInt")
     fun getBoundAppsIcon(context: Context): Icon {
         val methodName = this::getBoundAppsIcon.name
         Log.d(TAG, "$methodName()")
