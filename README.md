@@ -2,9 +2,12 @@
 
 [![Licence MIT](https://img.shields.io/badge/licence-MIT-blue.svg)](https://github.com/talhaoz/advanced-location/blob/dev/LICENCE)
 [![Release](https://jitpack.io/v/talhaoz/advanced-location.svg)](https://jitpack.io/#talhaoz/advanced-location)
-[![Downloads](https://jitpack.io/v/talhaoz/advanced-location/month.svg)](#download)
 
 A powerful library for easy implementation of HMS Location Kit. 💙
+
+* _Request location with couple lines of code (no more boilerplate)_
+* _Care more about battery consumption when requesting location_
+* _Reach location in the background with ease_
 
 ## Features
 - Auto Location Permission Request
@@ -15,6 +18,9 @@ A powerful library for easy implementation of HMS Location Kit. 💙
 - Background Location Updates
 - Auto Activity Recognition Permission Request
 - Activity Type Recognition
+
+## Demo App
+You can reach Demo app from [here](https://github.com/talhaoz/advanced-location/tree/dev/app)
 
 ## Setup
 
@@ -29,8 +35,7 @@ allprojects {
 }
 ```
 
-`build.gradle (app)`
-
+##### build.gradle (app)
 ```gradle
 dependencies {
     ...
@@ -38,8 +43,7 @@ dependencies {
 }
 ```
 
-`agconnect-services.json`
-
+##### agconnect-services.json
 ```app
 Add agconnect-services.json file under app directory
 ```
