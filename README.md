@@ -24,8 +24,7 @@ You can reach Demo app from [here](https://github.com/talhaoz/advanced-location/
 
 ## Setup
 
-`build.gradle (project)`
-
+##### build.gradle (project)
 ```gradle
 allprojects {
     repositories {
