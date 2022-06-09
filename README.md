@@ -5,6 +5,10 @@
 
 A powerful library for easy implementation of HMS Location Kit. 💙
 
+* _Request location with couple lines of code (no more boilerplate)_
+* _Care more about battery consumption when requesting location_
+* _Reach location in the background with ease_
+
 ## Features
 - Auto Location Permission Request
 - Requesting Location Updates by caring battery consumption
@@ -14,6 +18,9 @@ A powerful library for easy implementation of HMS Location Kit. 💙
 - Background Location Updates
 - Auto Activity Recognition Permission Request
 - Activity Type Recognition
+
+## Demo App
+You can reach Demo app from [here](https://github.com/talhaoz/advanced-location/tree/dev/app)
 
 ## Setup
 ##### build.gradle (project)
