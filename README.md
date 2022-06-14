@@ -23,10 +23,21 @@ A powerful library for easy implementation of HMS Location Kit. 💙
 You can reach Demo app from [here](https://github.com/talhaoz/advanced-location/tree/dev/app)
 
 ## Setup
-
-##### build.gradle (project)
+⚠️ Please check your Android Studio version before proceed (Help > About) ⚠️
+##### build.gradle (project) // Only for Android Studio Bumblebee | 2021.1.0 or lower
 ```gradle
 allprojects {
+    repositories {
+        ...
+        maven { url 'https://jitpack.io' }
+    }
+}
+```
+
+##### settings.gradle // Only for Android Studio Bumblebee | 2021.1.1 or newer
+```gradle
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
         ...
         maven { url 'https://jitpack.io' }
@@ -38,7 +49,7 @@ allprojects {
 ```gradle
 dependencies {
     ...
-    implementation 'com.github.talhaoz:advanced-location:1.1.0
+    implementation 'com.github.talhaoz:advanced-location:1.1.1'
 }
 ```
 
