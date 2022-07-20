@@ -2,9 +2,12 @@
 
 [![Licence MIT](https://img.shields.io/badge/licence-MIT-blue.svg)](https://github.com/talhaoz/advanced-location/blob/dev/LICENCE)
 [![Release](https://jitpack.io/v/talhaoz/advanced-location.svg)](https://jitpack.io/#talhaoz/advanced-location)
-[![Downloads](https://jitpack.io/v/talhaoz/advanced-location/month.svg)](#download)
 
 A powerful library for easy implementation of HMS Location Kit. 💙
+
+* _Request location with couple lines of code (no more boilerplate)_
+* _Care more about battery consumption when requesting location_
+* _Reach location in the background with ease_
 
 ## Features
 - Auto Location Permission Request
@@ -16,8 +19,12 @@ A powerful library for easy implementation of HMS Location Kit. 💙
 - Auto Activity Recognition Permission Request
 - Activity Type Recognition
 
+## Demo App
+You can reach Demo app from [here](https://github.com/talhaoz/advanced-location/tree/dev/app)
+
 ## Setup
-##### build.gradle (project)
+⚠️ Please check your Android Studio version before proceed (Help > About) ⚠️
+##### build.gradle (project) // Only for Android Studio Bumblebee | 2021.1.0 or lower
 ```gradle
 allprojects {
     repositories {
@@ -27,14 +34,26 @@ allprojects {
 }
 ```
 
-#### build.gradle (app)
+##### settings.gradle // Only for Android Studio Bumblebee | 2021.1.1 or newer
+```gradle
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        ...
+        maven { url 'https://jitpack.io' }
+    }
+}
+```
+
+##### build.gradle (app)
 ```gradle
 dependencies {
     ...
-    implementation 'com.github.talhaoz:advanced-location:1.1.0
+    implementation 'com.github.talhaoz:advanced-location:1.1.1'
 }
 ```
-#### agconnect-services.json
+
+##### agconnect-services.json
 ```app
 Add agconnect-services.json file under app directory
 ```
@@ -159,3 +178,4 @@ advancedLocation.clearActivityTypeDB()
 MIT License
 
 Copyright (c) 2022 Talha ÖZ
+
